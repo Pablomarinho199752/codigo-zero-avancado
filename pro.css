@@ -35,3 +35,13 @@
   .pro-modal-head{min-width:0}
   .pro-modal-head h2{min-width:0;overflow-wrap:anywhere}
 }
+
+/* Modo de desenvolvimento App Check — exibido apenas dentro do APK Capacitor */
+.native-appcheck-guide{padding:15px;margin:0 0 16px;background:var(--panel2);border:1px solid var(--accent);border-radius:16px;max-width:100%;min-width:0;overflow-wrap:anywhere;font-size:15px;line-height:1.55}
+.native-appcheck-guide strong{display:block;font-size:18px;margin-bottom:7px}
+.native-appcheck-guide p{margin:10px 0}
+.native-appcheck-guide small{display:block;color:var(--muted);margin-top:12px}
+.native-appcheck-token{font:14px ui-monospace,SFMono-Regular,Consolas,monospace;max-width:100%;margin:0 0 8px}
+.native-appcheck-links{display:flex;flex-wrap:wrap;gap:8px 16px;margin:12px 0}
+.native-appcheck-links a{color:var(--accent);text-decoration:underline;font-size:14px}
+@media(max-width:560px){.native-appcheck-guide{padding:12px}.native-appcheck-guide button{max-width:100%;white-space:normal}}

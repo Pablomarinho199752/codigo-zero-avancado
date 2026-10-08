@@ -6,7 +6,7 @@ import { fileURLToPath } from 'node:url';
 const repo = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 const target = join(repo, 'www');
 const includes = [
-  'index.html', 'bootstrap.js', 'firebase-tutor-setup.js',
+  'index.html', 'bootstrap.js', 'firebase-tutor-setup.js', 'android-app-check.js',
   'styles.css', 'pro.css', 'sw.js', 'manifest.webmanifest',
   'assets', 'payload'
 ];

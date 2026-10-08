@@ -48,3 +48,24 @@ instalar. O restante do curso funciona com os arquivos embarcados no APK.
 O Firebase `codigo-zero-avancado` foi visto no plano **Spark** em 08/10/2026.
 Nenhum comando deste repositório ativa faturamento. As chaves aqui são
 configurações Web públicas; não adicione senhas ou chaves privadas.
+
+## Tutor IA no APK Android de teste (401 App Check)
+
+O APK Capacitor executa as aulas em `https://localhost`, que não é um
+endereço autorizado para a chave reCAPTCHA de produção. **Não adicione localhost
+à chave reCAPTCHA Web.** No APK de depuração existe um assistente na aba Tutor IA
+para gerar um token particular desse aparelho e cadastrá-lo em:
+
+Firebase Console → App Check → Apps → Código Zero Web PWA → menu ⋮ →
+**Gerenciar tokens de depuração** → Adicionar.
+
+1. Instale o APK de teste, abra Tutor IA e toque **Gerar token de teste deste aparelho**.
+2. O aplicativo recarrega; abra Tutor IA e toque **Copiar meu token**.
+3. No Firebase, registre esse token com nome **Meu APK de teste**.
+4. Volte ao APK e teste a resposta Gemini.
+
+**Segurança:** não compartilhe nem faça commit do token; ele concede
+acesso a partir de um dispositivo não verificado. Esse método é apenas
+para testar no seu próprio aparelho, não para distribuição pública. Para
+publicar o Android de verdade, registre um aplicativo Android no Firebase e
+implemente App Check com Play Integrity e assinatura estável.
