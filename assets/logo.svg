@@ -1,0 +1,37 @@
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 1024 1024" role="img" aria-label="Código Zero — novo ícone">
+  <defs>
+    <linearGradient id="base" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#04cfc5"/>
+      <stop offset=".24" stop-color="#064b81"/>
+      <stop offset=".57" stop-color="#071530"/>
+      <stop offset="1" stop-color="#037ca5"/>
+    </linearGradient>
+    <linearGradient id="panel" x1=".2" y1="0" x2=".9" y2="1">
+      <stop offset="0" stop-color="#0d304c"/>
+      <stop offset=".53" stop-color="#061227"/>
+      <stop offset="1" stop-color="#071943"/>
+    </linearGradient>
+    <linearGradient id="cyan" x1="0" y1="0" x2=".85" y2="1">
+      <stop offset="0" stop-color="#c6ffff"/>
+      <stop offset=".22" stop-color="#3eebf0"/>
+      <stop offset=".61" stop-color="#00cfce"/>
+      <stop offset="1" stop-color="#2170ff"/>
+    </linearGradient>
+    <linearGradient id="white" x1=".05" y1="0" x2=".7" y2="1">
+      <stop offset="0" stop-color="#ffffff"/>
+      <stop offset="1" stop-color="#cfe7ff"/>
+    </linearGradient>
+  </defs>
+  <rect width="1024" height="1024" rx="215" fill="#050e23"/>
+  <rect x="28" y="28" width="968" height="968" rx="208" fill="url(#base)"/>
+  <path d="M34 455C147 208 314 86 586 55 780 40 927 177 989 313L995 705C791 987 363 1066 36 738Z" fill="url(#panel)" opacity=".93"/>
+  <path d="M49 720C290 868 683 846 984 642L984 799Q926 994 761 995H238Q36 968 36 773Z" fill="#052b62" opacity=".6"/>
+  <g fill="none" stroke-linejoin="round" stroke-linecap="round">
+    <path d="M347 333L177 511L347 689" stroke="#0c677e" stroke-width="105" opacity=".35"/>
+    <path d="M677 333L847 511L677 689" stroke="#0c677e" stroke-width="105" opacity=".35"/>
+    <path d="M341 342L172 511L341 680" stroke="url(#white)" stroke-width="72"/>
+    <path d="M683 342L852 511L683 680" stroke="url(#white)" stroke-width="72"/>
+  </g>
+  <rect x="444" y="306" width="136" height="412" rx="68" fill="none" stroke="#0dd0df" stroke-width="91" opacity=".20"/>
+  <rect x="444" y="306" width="136" height="412" rx="68" fill="none" stroke="url(#cyan)" stroke-width="73"/>
+</svg>
