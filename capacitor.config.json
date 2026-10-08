@@ -1,0 +1,8 @@
+{
+  "appId": "br.com.pablomarinho.codigozero",
+  "appName": "Código Zero Avançado",
+  "webDir": "www",
+  "server": {
+    "androidScheme": "https"
+  }
+}
