@@ -22,14 +22,14 @@ state.current=Number.isInteger(state.current)?Math.max(0,Math.min(count-1,state.
 state.zoom=Number.isFinite(state.zoom)?Math.max(.9,Math.min(1.45,state.zoom)):1;
 state.theme=state.theme==='dark'?'dark':'light';
 const save=()=>{try{localStorage.setItem(KEY,JSON.stringify(state))}catch(err){console.warn('Sem espaço para salvar o progresso',err)}};
-const hasCode=l=>Boolean(l.raw[8]&&typeof l.raw[8]==='object');
+const hasCode=l=>Boolean(l.raw[9]&&typeof l.raw[9]==='object');
 const complete=l=>Boolean(state.quiz[l.id]&&(!hasCode(l)||state.code[l.id]));
 const firstLocked=()=>{for(let i=0;i<count;i++){if(!complete(lessons[i]))return i}return count};
 const available=i=>i>=0&&i<count&&(i<=firstLocked()||complete(lessons[i]));
 const btn=(name,cls,fn)=>{const b=el('button',cls,name);b.type='button';b.addEventListener('click',fn);return b};
 function styleSetup(){
  document.documentElement.classList.toggle('dark',state.theme==='dark');
- document.documentElement.style.setProperty('--zoom',String(state.zoom));
+ document.documentElement.style.setProperty('--zoom',String(state.zoom));document.documentElement.style.fontSize=(16*state.zoom)+'px';
  $('themeBtn').textContent=state.theme==='dark'?'☀ Tema claro':'☾ Tema escuro';
 }
 function refreshProgress(){
@@ -85,7 +85,7 @@ function render(){
   const codeBlock=el('div','');
   codeBlock.append(sectionTitle('4','Leia o exemplo de código'));
   codeBlock.append(el('p','mini-note','Leia cada linha com calma. Não precisa decorar tudo agora.'));
-  codeBlock.append(el('pre','',l.raw[8].codigo));
+  codeBlock.append(el('pre','',l.raw[9].codigo));
   concept.append(codeBlock);
  }
  body.append(concept);
@@ -116,12 +116,10 @@ function render(){
    afterSuccess(l);
   }else{
    state.attempts[l.id]=(state.attempts[l.id]||0)+1;save();
-   notice(feedback,'error','Ainda não. Vamos entender.',state.attempts[l.id]>1?'Dica: '+l.raw[8-1+1-1]:'Leia o exemplo acima e tente de novo.');
-   // A dica existe no campo 8 (índice 8? O dado do exercício opcional começa em 9).
-   if(state.attempts[l.id]>1)notice(feedback,'error','Tente outra vez','Dica: '+l.raw[8-1+1]);
+   notice(feedback,'error','Ainda não. Vamos entender.',state.attempts[l.id]>1?'Dica: '+l.raw[8]:'Releia o exemplo acima e tente mais uma vez.');
   }
  }));
- actions.append(btn('Quero uma dica','secondary',()=>notice(feedback,'','Dica para pensar',l.raw[8]&&typeof l.raw[8]==='string'?l.raw[8]:l.raw[7])));
+ actions.append(btn('Quero uma dica','secondary',()=>notice(feedback,'','Dica para pensar',l.raw[8])));
  quiz.append(actions);
  body.append(quiz);
  if(hasCode(l))makePractice(l,body);
@@ -144,7 +142,7 @@ function afterSuccess(l){
  refreshProgress();navRender();
 }
 function makePractice(l,root){
- const data=l.raw[8],pr=el('section','practice');
+ const data=l.raw[9],pr=el('section','practice');
  pr.append(sectionTitle('6','Vamos praticar sem copiar'));
  pr.append(el('p','',data.desafio));
  const code=el('textarea','editor');code.setAttribute('aria-label','Escreva sua tentativa de código');
@@ -164,7 +162,7 @@ function makePractice(l,root){
    state.code[l.id]=true;save();notice(fb,'success','Boa tentativa!','Você incluiu as partes essenciais. Esta ferramenta não executa Python/HTML e não prova que o programa funciona; confira o comportamento no laboratório do curso completo.');
    afterSuccess(l);
  }));
- act.append(btn('Ver exemplo novamente','secondary',()=>{const example=pr.previousElementSibling?.querySelector('pre');if(example)example.scrollIntoView({behavior:'smooth',block:'center'})}));
+ act.append(btn('Ver exemplo novamente','secondary',()=>{const example=root.querySelector('pre');if(example)example.scrollIntoView({behavior:'smooth',block:'center'})}));
  pr.append(act,el('p','mini-note','Verificação introdutória de estrutura: não substitui executar o programa, encontrar erros e testar o resultado.'));
  root.append(pr);
 }
