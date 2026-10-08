@@ -42,6 +42,9 @@ jobs:
       - name: Sincronizar arquivos no Android
         run: npx cap sync android
 
+      - name: Gerar ícones Android exclusivos do Código Zero
+        run: npx @capacitor/assets generate --android --iconBackgroundColor '#071b32' --iconBackgroundColorDark '#071b32' --splashBackgroundColor '#071b32' --splashBackgroundColorDark '#071b32'
+
       - name: Compilar APK de instalação (debug)
         working-directory: android
         run: |
