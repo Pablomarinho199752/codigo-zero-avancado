@@ -17,3 +17,48 @@ button,input,textarea{font:inherit}.sidebar{position:fixed;inset:0 auto 0 0;widt
 .simple-box{margin:18px 0;padding:18px;border:1px solid var(--line);border-radius:16px;background:var(--panel2)}.simple-box h3{margin:0 0 10px}.simple-box dl{margin:0}.simple-box dt{font-weight:800;margin-top:10px}.simple-box dd{margin:3px 0 0;color:var(--muted)}
 .math-card{padding:18px;margin:14px 0;border:1px solid var(--line);border-radius:16px;background:var(--panel2)}.math-card h3{margin:0 0 8px}.math-example{padding:12px;border-radius:12px;background:var(--bg);margin-top:10px}.math-ok{font-weight:800;color:var(--accent2)}
 @media(max-width:520px){.top-actions{gap:5px}.text-size-btn{padding:9px 10px;min-width:40px}.panel{font-size:calc(17px * var(--study-scale))}.tabs{gap:2px}.tab{padding:12px 10px}.topbar{gap:9px}}
+
+/* MOBILE-FIX-20261008 — preservar a largura da tela sem cortar o conteúdo */
+html,body{max-width:100%;overflow-x:clip}
+#app,.main{min-width:0}
+.main{box-sizing:border-box}
+.topbar>div:not(.top-actions){min-width:0}
+.topbar>.top-actions{flex:0 0 auto;min-width:0}
+.panel,.hero-card,.tabs,.lesson-nav{min-width:0;max-width:100%}
+.panel :is(pre,code,table){max-width:100%}
+.panel pre{overflow-x:auto;white-space:pre-wrap;overflow-wrap:anywhere}
+.panel code,.panel p,.panel li,.hero-card p{overflow-wrap:anywhere}
+.editor-wrap,#codeEditor,.preview-wrap{min-width:0;max-width:100%}
+@media(max-width:860px){
+  #app{width:100%;max-width:100%}
+  .main{margin-left:0;width:100%;max-width:100%;padding:16px 14px 48px}
+  .topbar{display:flex;flex-wrap:wrap;justify-content:flex-start;align-items:center;gap:10px}
+  .topbar>#menuBtn{flex:0 0 auto}
+  .topbar>div:not(.top-actions){flex:1 1 0%;min-width:0;max-width:100%}
+  .topbar h1{font-size:clamp(22px,6.5vw,30px);line-height:1.18;overflow-wrap:anywhere;word-break:normal}
+  .crumb{overflow-wrap:anywhere}
+  .topbar>.top-actions{flex:1 1 100%;width:100%;min-width:0;display:flex;flex-wrap:wrap;align-items:stretch;justify-content:flex-start;gap:7px}
+  .topbar>.top-actions>*{flex:0 1 auto;max-width:100%;min-width:40px}
+  .topbar>.top-actions>.timer-chip{min-width:82px}
+  .hero-card{display:flex;flex-direction:column;align-items:stretch;gap:12px}
+  .hero-card>div{min-width:0;width:100%}
+  .hero-card .primary{width:100%;max-width:100%}
+  .tabs{width:100%;display:flex;flex-wrap:nowrap;overflow-x:auto;overflow-y:hidden;overscroll-behavior-x:contain;-webkit-overflow-scrolling:touch}
+  .tabs .tab{flex:0 0 auto;min-width:0;white-space:normal;text-align:center}
+  .panel{width:100%;padding:16px}
+  .objectives{grid-template-columns:repeat(auto-fit,minmax(min(210px,100%),1fr))}
+  .practice-head{flex-wrap:wrap}
+  .lesson-nav{width:100%;gap:10px}
+  .lesson-nav button{min-width:0;flex:1 1 0}
+}
+@media(max-width:420px){
+  .main{padding:12px 12px 40px}
+  .topbar{gap:8px}
+  .topbar h1{font-size:clamp(21px,6.2vw,27px)}
+  .topbar>.top-actions{gap:6px}
+  .topbar>.top-actions>.icon-btn{padding:9px 11px}
+  .hero-card{padding:14px;margin:16px 0}
+  .panel{padding:14px}
+  .tabs .tab{padding:11px 9px}
+  .panel .objectives{grid-template-columns:minmax(0,1fr)}
+}

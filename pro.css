@@ -9,3 +9,29 @@
 @media(max-width:900px){.pro-grid{grid-template-columns:repeat(2,1fr)}.pro-two{grid-template-columns:1fr}.pro-fab{right:14px;bottom:14px}.tutor-chat{height:390px}}
 @media(max-width:560px){.pro-grid{grid-template-columns:1fr 1fr}.pro-modal-backdrop{padding:0}.pro-modal{margin:0;border-radius:0;min-height:100vh}.pro-modal-body{padding:15px}.tutor-compose{grid-template-columns:1fr}.tutor-compose button{width:100%}.pro-stat strong{font-size:20px}}
 @media print{body>*:not(.pro-modal-backdrop){display:none!important}.pro-modal-backdrop{position:static;display:block!important;background:white;padding:0}.pro-modal{box-shadow:none;border:0;margin:0}.pro-modal-head,.no-print{display:none!important}.pro-modal-body{padding:0}.certificate{border:8px double #25344f}}
+
+/* MOBILE-FIX-20261008 — painel avançado e Tutor sem overflow */
+.pro-toolbar,.pro-grid,.pro-two,.pro-card,.pro-row,.tutor-shell,.tutor-status,.tutor-chat,.tutor-compose,.mastery-box,.review-card{min-width:0;max-width:100%}
+.pro-card,.pro-row,.review-card,.tutor-msg{overflow-wrap:anywhere}
+.pro-row>*,.tutor-status>*,.tutor-compose>*{min-width:0}
+@media(max-width:860px){
+  .pro-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .pro-two{grid-template-columns:minmax(0,1fr)}
+  .tutor-status{flex-wrap:wrap;align-items:flex-start}
+  .tutor-status>button{flex:0 0 auto}
+  .tutor-shell{grid-template-columns:minmax(0,1fr)}
+  .tutor-chat{width:100%;overflow-x:hidden;overflow-y:auto}
+  .tutor-msg{max-width:min(90%,100%)}
+  .tutor-compose{grid-template-columns:minmax(0,1fr) auto}
+  .pro-modal{max-width:100%;min-width:0}
+  .pro-modal-body{min-width:0}
+  .pro-input,.pro-select{min-width:0;max-width:100%}
+  .pro-fab{max-width:calc(100vw - 24px)}
+}
+@media(max-width:560px){
+  .pro-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .tutor-compose{grid-template-columns:minmax(0,1fr)}
+  .tutor-compose button{width:100%}
+  .pro-modal-head{min-width:0}
+  .pro-modal-head h2{min-width:0;overflow-wrap:anywhere}
+}
