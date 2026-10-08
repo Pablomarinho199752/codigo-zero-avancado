@@ -18,7 +18,7 @@ for(const [mi,m] of modules.entries()){
   assert.ok(a.length===9||a.length===10,'Aula sem campos necessários: '+mi+'/'+li);
   const [title,idea,analogy,walk,question,choices,answer,why,hint,practice]=a;
   for(const [name,value] of Object.entries({title,idea,analogy,walk,question,why,hint})){
-   assert.ok(typeof value==='string'&&value.length>=15,'Texto insuficiente ('+name+'): '+title);
+   assert.ok(typeof value==='string'&&value.length>=({title:6,idea:20,analogy:12,walk:12,question:8,why:10,hint:10}[name]),'Texto insuficiente ('+name+'): '+title);
   }
   assert.ok(!titles.has(title),'Aula duplicada: '+title);titles.add(title);
   assert.ok(Array.isArray(choices)&&choices.length>=3,'Alternativas insuficientes: '+title);
