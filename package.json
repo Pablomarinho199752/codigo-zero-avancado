@@ -1,0 +1,18 @@
+{
+  "name": "codigo-zero-avancado-android",
+  "version": "2.0.1",
+  "private": true,
+  "description": "APK Android offline do curso Código Zero Avançado",
+  "scripts": {
+    "build:android-web": "node scripts/build-android-web.mjs",
+    "android:sync": "npm run build:android-web && npx cap sync android",
+    "android:apk": "npm run android:sync && cd android && ./gradlew assembleDebug"
+  },
+  "dependencies": {
+    "@capacitor/core": "^8.0.0",
+    "@capacitor/android": "^8.0.0"
+  },
+  "devDependencies": {
+    "@capacitor/cli": "^8.0.0"
+  }
+}
