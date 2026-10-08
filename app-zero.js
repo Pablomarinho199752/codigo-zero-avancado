@@ -8,10 +8,12 @@ const modules=window.ZERO_MODULOS||[];
 const lessons=[];
 modules.forEach((m,mi)=>m.aulas.forEach((a,li)=>lessons.push({id:'z'+lessons.length,mod:mi,index:li,raw:a})));
 const count=lessons.length;
+// O APK Capacitor pode desenhar sob a barra de status do Android.
+if(window.Capacitor?.isNativePlatform?.()) document.documentElement.classList.add('native-app');
 const $=id=>document.getElementById(id);
 const el=(tag,cls,content)=>{const n=document.createElement(tag);if(cls)n.className=cls;if(content!==undefined)n.textContent=String(content);return n};
 const link=(label,href,cls='secondary')=>{const a=el('a',cls,label);a.href=href;a.style.textDecoration='none';a.style.display='inline-flex';a.style.alignItems='center';a.style.justifyContent='center';return a};
-let state={done:[],quiz:{},code:{},answers:{},attempts:{},current:0,theme:'light',zoom:1,notes:{}};
+let state={done:[],quiz:{},code:{},answers:{},attempts:{},current:0,theme:'light',zoom:1,notes:{},introSeen:false};
 try{
  const saved=JSON.parse(localStorage.getItem(KEY)||'null');
  if(saved&&typeof saved==='object'&&!Array.isArray(saved))state={...state,...saved};
@@ -68,7 +70,7 @@ let chosen=-1;
 function render(){
  const l=lessons[state.current];if(!l)return;
  chosen=Number.isInteger(state.answers[l.id])?state.answers[l.id]:-1;
- $('stepLabel').textContent='Aula '+(state.current+1)+' de '+count+' · '+modules[l.mod].nome;
+ $('stepLabel').textContent='Aula '+(state.current+1)+'/'+count+' · '+modules[l.mod].nome;
  $('sectionName').textContent=modules[l.mod].descricao;
  const body=$('lessonContent');body.replaceChildren();
  const header=el('div','lesson-header');
@@ -79,6 +81,9 @@ function render(){
  concept.append(el('p','',l.raw[1]));
  concept.append(sectionTitle('2','Veja um exemplo'));
  const ex=el('div','example');ex.append(el('strong','','Exemplo explicado'),el('p','',l.raw[2]));concept.append(ex);
+ const videoRow=el('div','action-row video-link-row');
+ videoRow.append(btn('▶ Buscar videoaula deste assunto','secondary',openVideoForCurrent));
+ concept.append(videoRow,el('p','mini-note','Vídeo opcional em português: abre uma busca no YouTube. A seleção ainda não é individualmente verificada.'));
  concept.append(sectionTitle('3','Ligue as ideias'));
  concept.append(el('div','story',l.raw[3]));
  if(hasCode(l)){
@@ -166,13 +171,27 @@ function makePractice(l,root){
  pr.append(act,el('p','mini-note','Verificação introdutória de estrutura: não substitui executar o programa, encontrar erros e testar o resultado.'));
  root.append(pr);
 }
+function hideWelcome(){
+ state.introSeen=true;
+ $('welcome').hidden=true;
+ $('welcome').classList.add('hidden');
+}
 function go(i){
  if(!available(i))return;
- state.current=i;save();render();window.scrollTo({top:0,behavior:'instant'});$('sidebar').classList.remove('open');
+ state.current=i;
+ hideWelcome();save();render();window.scrollTo({top:0,behavior:'instant'});$('sidebar').classList.remove('open');
 }
 function firstVisit(){
- $('welcome').hidden=false;
- $('welcome').classList.remove('hidden');
+ const shouldShow=!state.introSeen&&state.current===0&&!Object.keys(state.quiz).some(k=>state.quiz[k]);
+ $('welcome').hidden=!shouldShow;
+ $('welcome').classList.toggle('hidden',!shouldShow);
+}
+function openVideoForCurrent(){
+ const l=lessons[state.current];
+ const subject=l.raw[0];
+ const prefix=l.mod===2||l.mod===10?'matemática básica do zero':l.mod===3||l.mod===4||l.mod===5||l.mod===6?'Curso em Vídeo Python iniciantes':l.mod===0?'informática básica para iniciantes':'programação para iniciantes';
+ const url='https://www.youtube.com/results?search_query='+encodeURIComponent(prefix+' '+subject+' explicação português');
+ window.open(url,'_blank','noopener,noreferrer');
 }
 function installButtons(){
  $('menuBtn').addEventListener('click',()=>$('sidebar').classList.toggle('open'));
@@ -181,15 +200,13 @@ function installButtons(){
  $('fontMinus').addEventListener('click',()=>{state.zoom=Math.max(.9,Math.round((state.zoom-.1)*10)/10);save();styleSetup()});
  $('previousBtn').addEventListener('click',()=>go(state.current-1));
  $('nextBtn').addEventListener('click',()=>go(state.current+1));
- $('resumeBtn').addEventListener('click',()=>{go(firstLocked()<count?firstLocked():state.current);$('welcome').classList.add('hidden')});
+ $('resumeBtn').addEventListener('click',()=>go(firstLocked()<count?firstLocked():state.current));
+ $('introBtn').addEventListener('click',()=>{const welcome=$('welcome');welcome.hidden=false;welcome.classList.remove('hidden');$('sidebar').classList.remove('open');welcome.scrollIntoView({behavior:'smooth',block:'start'})});
  $('reviewBtn').addEventListener('click',()=>{
    const pending=lessons.findIndex(l=>(state.attempts[l.id]||0)>0&&!complete(l));
    if(pending>=0)go(pending);else alert('Não há erros pendentes de revisão. Você pode rever as aulas pelo menu.');
  });
- $('videoBtn').addEventListener('click',()=>{
-  const t=lessons[state.current].raw[0];
-  window.open('https://www.youtube.com/results?search_query='+encodeURIComponent('curso em vídeo programação iniciantes '+t+' português brasileiro'),'_blank','noopener,noreferrer');
- });
+ $('videoBtn').addEventListener('click',openVideoForCurrent);
  $('exportBtn').addEventListener('click',()=>{
   const blob=new Blob([JSON.stringify({course:'codigo-zero-fundamentos',version:1,exportedAt:new Date().toISOString(),data:state},null,2)],{type:'application/json'});
   const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='codigo-zero-meu-progresso.json';a.click();setTimeout(()=>URL.revokeObjectURL(a.href),2000);
@@ -202,7 +219,7 @@ function installButtons(){
    const d=imported.data;
    if(!Array.isArray(d.done)||!d.quiz||typeof d.quiz!=='object'||!d.code||typeof d.code!=='object')throw new Error('Dados incompletos.');
    if(!confirm('Importar este progresso? O progresso atual dos fundamentos será substituído.'))return;
-   state={...state,...d};state.current=0;save();styleSetup();render();alert('Progresso importado.');
+   state={...state,...d};state.current=0;save();styleSetup();render();firstVisit();alert('Progresso importado.');
   }catch(err){alert('Falha ao importar: '+String(err.message||err))}
   e.target.value='';
  });
