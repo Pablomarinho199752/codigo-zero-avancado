@@ -1,4 +1,4 @@
-const CACHE='codigo-zero-alfabetizacao-v3-1';
+const CACHE='codigo-zero-mobile-fit-video-v3-2';
 const ASSETS=["./","./index.html","./curso-completo.html","./aulas-zero-1.js","./aulas-zero-2.js","./app-zero.js","./zero.css","./styles.css","./pro.css","./bootstrap.js","./firebase-tutor-setup.js","./android-app-check.js","./manifest.webmanifest","./assets/icon-192.svg","./assets/icon-512.svg","./assets/logo.svg","./payload/code-00.txt","./payload/code-01.txt","./payload/code-02.txt","./payload/code-03.txt","./payload/code-04.txt","./payload/code-05.txt","./payload/code-06.txt","./payload/code-07.txt"];
 self.addEventListener('install',e=>{self.skipWaiting();e.waitUntil(caches.open(CACHE).then(c=>c.addAll(ASSETS)));});
 self.addEventListener('activate',e=>e.waitUntil(Promise.all([self.clients.claim(),caches.keys().then(keys=>Promise.all(keys.filter(k=>k.startsWith('codigo-zero-')&&k!==CACHE).map(k=>caches.delete(k))))])));
