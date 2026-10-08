@@ -1,6 +1,6 @@
 {
   "name": "codigo-zero-avancado-android",
-  "version": "2.0.1",
+  "version": "2.0.2",
   "private": true,
   "description": "APK Android offline do curso Código Zero Avançado",
   "scripts": {
@@ -13,6 +13,7 @@
     "@capacitor/android": "^8.0.0"
   },
   "devDependencies": {
-    "@capacitor/cli": "^8.0.0"
+    "@capacitor/cli": "^8.0.0",
+    "@capacitor/assets": "^3.0.5"
   }
 }
