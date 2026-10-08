@@ -1,110 +1,80 @@
 <!doctype html>
 <html lang="pt-BR">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-  <meta name="theme-color" content="#0b1220" />
-  <meta name="description" content="Curso autoral de programação do zero ao avançado, em português, com prática integrada." />
-  <link rel="manifest" href="manifest.webmanifest" />
-  <link rel="icon" href="assets/icon-192.svg" />
-  <link rel="apple-touch-icon" href="assets/icon-192.svg" />
-  <link rel="stylesheet" href="styles.css" />
-  <title>Código Zero → Avançado — Edição Completa 2.0</title>
-  <link rel="stylesheet" href="pro.css" />
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#1958bd">
+<meta name="description" content="Aprenda programação absolutamente do zero com exemplos simples, exercícios graduais e 96 aulas técnicas para depois.">
+<title>Código Zero — Comece do zero absoluto</title>
+<link rel="manifest" href="./manifest.webmanifest">
+<link rel="icon" href="./assets/icon-192.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="./assets/icon-192.svg">
+<link rel="stylesheet" href="./zero.css">
 </head>
 <body>
-  <div id="app">
-    <aside class="sidebar" id="sidebar">
-      <div class="brand">
-        <div class="logo">&lt;/&gt;</div>
-        <div>
-          <strong>Código Zero</strong>
-          <span>do zero ao avançado</span>
-        </div>
-      </div>
-      <div class="overall">
-        <div class="overall-row"><span>Progresso</span><strong id="overallPct">0%</strong></div>
-        <div class="bar"><div id="overallBar" class="bar-fill"></div></div>
-      </div>
-      <input id="lessonSearch" class="lesson-search" type="search" placeholder="Buscar aula ou módulo..." aria-label="Buscar aula ou módulo" />
-      <nav id="moduleList" class="module-list" aria-label="Módulos"></nav>
-      <div class="sidebar-actions">
-        <button id="exportBtn" class="ghost">Exportar progresso</button>
-        <label class="ghost file-btn">Importar progresso<input id="importInput" type="file" accept="application/json" hidden></label>
-      </div>
-    </aside>
-
-    <main class="main">
-      <header class="topbar">
-        <button id="menuBtn" class="icon-btn" aria-label="Abrir menu">☰</button>
-        <div>
-          <div id="crumb" class="crumb">Módulo 0</div>
-          <h1 id="lessonTitle">Pensamento computacional</h1>
-        </div>
-        <div class="top-actions">
-          <button id="fontDownBtn" class="icon-btn text-size-btn" aria-label="Diminuir texto">A−</button>
-          <button id="fontUpBtn" class="icon-btn text-size-btn" aria-label="Aumentar texto">A+</button>
-          <button id="themeBtn" class="icon-btn" aria-label="Alternar tema">◐</button>
-        </div>
-      </header>
-
-      <section class="hero-card">
-        <div>
-          <span id="lessonBadge" class="badge">Iniciante</span>
-          <p id="lessonSummary"></p>
-        </div>
-        <button id="completeBtn" class="primary">Marcar como concluída</button>
-      </section>
-
-      <div class="tabs" role="tablist">
-        <button class="tab active" data-tab="lesson">Aula</button>
-        <button class="tab" data-tab="practice">Prática</button>
-        <button class="tab" data-tab="quiz">Quiz</button>
-        <button class="tab" data-tab="math">Matemática sem medo</button>
-        <button class="tab" data-tab="notes">Notas</button>
-      </div>
-
-      <section id="lessonPanel" class="panel active"></section>
-
-      <section id="practicePanel" class="panel">
-        <div class="practice-head">
-          <div>
-            <h2 id="challengeTitle">Laboratório</h2>
-            <p id="challengePrompt"></p>
-          </div>
-          <span id="langBadge" class="lang-badge">Pseudocódigo</span>
-        </div>
-        <div class="editor-wrap">
-          <textarea id="codeEditor" spellcheck="false" aria-label="Editor de código"></textarea>
-        </div>
-        <div class="practice-actions">
-          <button id="runBtn" class="primary">Executar / verificar</button>
-          <button id="resetCodeBtn" class="ghost">Restaurar código</button>
-          <button id="hintBtn" class="ghost">Dica</button>
-        </div>
-        <pre id="output" class="output">Seu resultado aparecerá aqui.</pre>
-        <div id="preview" class="preview-wrap"></div>
-      </section>
-
-      <section id="quizPanel" class="panel"></section>
-
-      <section id="mathPanel" class="panel"></section>
-
-      <section id="notesPanel" class="panel">
-        <h2>Minhas notas</h2>
-        <p>Ficam salvas neste aparelho.</p>
-        <textarea id="notesArea" class="notes" placeholder="Escreva o que você entendeu, dúvidas, exemplos do seu trabalho etc."></textarea>
-      </section>
-
-      <footer class="lesson-nav">
-        <button id="prevBtn" class="ghost">← Anterior</button>
-        <button id="nextBtn" class="primary">Próxima →</button>
-      </footer>
-    </main>
-  </div>
-
-  <script src="firebase-tutor-setup.js"></script>
-  <script src="android-app-check.js"></script>
-  <script src="bootstrap.js"></script>
-</body>
-</html>
+<div class="layout">
+<aside id="sidebar" class="sidebar" aria-label="Menu das aulas">
+<a href="index.html" class="brand"><span class="brand-icon" aria-hidden="true">Z0</span><span><b>Código Zero</b><small>Da primeira aula ao avançado</small></span></a>
+<div class="progress-box">
+<div class="progress-row"><strong>Minha jornada</strong><span id="progressText">0 aulas</span></div>
+<div class="meter" role="progressbar" aria-label="Aulas concluídas"><div id="progressBar"></div></div>
+</div>
+<h2 class="side-title">Minha trilha · uma aula por vez</h2>
+<nav id="lessonMenu" aria-label="Navegar por aulas"></nav>
+<div class="sidebar-tools">
+<a href="curso-completo.html" class="secondary" style="text-align:center;text-decoration:none">Curso completo · 96 aulas ↗</a>
+<button id="reviewBtn" class="secondary" type="button">Revisar onde errei</button>
+<button id="exportBtn" class="secondary" type="button">Salvar cópia do progresso</button>
+<label class="secondary" style="display:block;text-align:center;cursor:pointer">Importar meu progresso<input id="importInput" type="file" accept="application/json" hidden></label>
+</div>
+</aside>
+<main class="main" id="conteudo">
+<div class="top">
+<div class="top-left"><button class="small-btn mobile-menu" id="menuBtn" type="button" aria-label="Abrir o menu de aulas">☰ Aulas</button><span id="stepLabel">Preparando aulas...</span></div>
+<div class="top-right">
+<button id="fontMinus" class="small-btn" type="button" aria-label="Diminuir letras">A−</button>
+<button id="fontPlus" class="small-btn" type="button" aria-label="Aumentar letras">A+</button>
+<button id="themeBtn" class="small-btn" type="button">☾ Tema escuro</button>
+</div>
+</div>
+<section id="welcome" class="panel welcome">
+<span class="eyebrow">Sem conhecimento prévio</span>
+<h1>Você não precisa saber nada antes de começar.</h1>
+<p>Aqui você aprende como quem está tendo a primeira aula na escola: uma ideia, um exemplo simples, uma pergunta e uma tentativa. Sem pressa e sem pular a explicação da matemática. O conteúdo avançado continua disponível quando você estiver preparado.</p>
+<div class="actions">
+<button class="primary" type="button" id="resumeBtn">Começar / continuar aprendendo</button>
+<a class="secondary" href="curso-completo.html" style="text-decoration:none">Já sei o básico · abrir curso completo ↗</a>
+</div>
+<p class="mini-note" style="margin-top:12px">O progresso desta trilha fica salvo neste aparelho. Você pode exportar um arquivo de segurança no menu.</p>
+</section>
+<section class="panel">
+<span class="eyebrow" id="sectionName">Aulas para iniciantes</span>
+<article id="lessonContent" aria-live="polite"></article>
+</section>
+<section class="panel">
+<div class="section-label">Preciso de ajuda?</div>
+<p class="helper">Se a explicação parecer difícil, toque em <b>Quero uma dica</b> e releia o exemplo. Você também pode pesquisar uma videoaula em português ou abrir o Tutor Gemini do curso completo. Para a IA entender esta aula, copie primeiro o contexto usando o botão.</p>
+<div class="action-row">
+<button id="videoBtn" type="button" class="secondary">Pesquisar videoaula em português ↗</button>
+<button id="aiBtn" type="button" class="secondary">Copiar contexto e abrir Tutor IA ↗</button>
+</div>
+<p class="mini-note">A pesquisa abre resultados do YouTube, não vídeos previamente verificados. Tutor online precisa de internet e configuração válida do Firebase.</p>
+</section>
+<nav class="footer-nav" aria-label="Avançar aulas">
+<button id="previousBtn" class="secondary" type="button">← Voltar</button>
+<button id="nextBtn" class="primary" type="button" disabled>Próxima aula →</button>
+</nav>
+<p class="mini-note" id="statusLine" role="status">Para continuar, faça a atividade da aula.</p>
+<p class="mini-note" id="nextRecommended"></p>
+</main>
+</div>
+<noscript>Ative o JavaScript para usar as aulas interativas.</noscript>
+<script src="./aulas-zero-1.js"></script>
+<script src="./aulas-zero-2.js"></script>
+<script src="./app-zero.js"></script>
+<script>
+if('serviceWorker' in navigator && location.protocol==='https:'){
+ navigator.serviceWorker.register('./sw.js').catch(err=>console.warn('Offline indisponível',err));
+}
+</script>
+</body></html>

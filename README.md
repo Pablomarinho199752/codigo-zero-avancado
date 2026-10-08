@@ -1,7 +1,24 @@
 # Código Zero → Avançado — Edição Completa 2.0
 
-Repositório **único e oficial** do aplicativo de ensino Código Zero. O curso completo,
-com aulas, prática, matemática explicada do zero e Tutor Gemini, está aqui.
+Repositório **único e oficial** do aplicativo de ensino Código Zero. O aplicativo agora começa com uma trilha preparatória realmente acessível a quem nunca programou. O curso técnico original de 96 aulas, matemática e Tutor Gemini foi preservado no mesmo repositório.
+
+## Começar do zero absoluto (novidade)
+
+A página principal agora abre **79 microaulas em 11 módulos**, com:
+- explicação simples, situação do cotidiano e exemplo explicado **antes** do exercício;
+- uma pergunta por vez, dica progressiva e correção com explicação;
+- atividades práticas de escrita de código em etapas selecionadas;
+- matemática básica antes de resto e conversão binária;
+- progressão por domínio: é preciso acertar a pergunta e concluir a prática, quando houver;
+- resumos próprios por aula, progresso local, exportação e importação de segurança;
+- letras ajustáveis, tema claro/escuro, interface para celular e consulta a vídeos em português.
+
+**Limitação pedagógica:** a atividade de código da trilha inicial confere partes essenciais do texto, mas **não executa Python e não garante que o programa esteja correto**. O laboratório prático avançado permanece no curso original. Concluir não garante automaticamente nível profissional; os projetos e a experiência são indispensáveis.
+
+- **Comece aqui:** https://pablomarinho199752.github.io/codigo-zero-avancado/
+- **Curso técnico original de 96 aulas, laboratório e Tutor Gemini:** https://pablomarinho199752.github.io/codigo-zero-avancado/curso-completo.html
+
+O Tutor Gemini continua dependendo da configuração Firebase e da conexão à internet. Na trilha inicial, o botão **Copiar contexto e abrir Tutor IA** ajuda a transferir a pergunta ao curso completo, mas ainda exige que o aluno cole a mensagem.
 
 ## Abrir ou instalar pelo navegador
 
@@ -30,8 +47,9 @@ Exporte seu progresso antes de desinstalar.
 
 ## Estrutura principal
 
-- `index.html`, `styles.css`, `pro.css`: interface.
-- `bootstrap.js`, `payload/code-*.txt`: aulas, exercícios e tutor.
+- `index.html`, `zero.css`, `app-zero.js`, `aulas-zero-1.js`, `aulas-zero-2.js`: trilha preparatória de 79 microaulas.
+- `curso-completo.html`, `styles.css`, `pro.css`: interface original preservada.
+- `bootstrap.js`, `payload/code-*.txt`: curso técnico original de 96 aulas, exercícios e Tutor Gemini.
 - `firebase-tutor-setup.js`: configuração Web pública Firebase/App Check.
 - `assets/`: ícones do aplicativo.
 - `manifest.webmanifest`, `sw.js`: instalação PWA e funcionamento offline.
@@ -69,3 +87,7 @@ acesso a partir de um dispositivo não verificado. Esse método é apenas
 para testar no seu próprio aparelho, não para distribuição pública. Para
 publicar o Android de verdade, registre um aplicativo Android no Firebase e
 implemente App Check com Play Integrity e assinatura estável.
+
+## Verificações de integridade
+
+Execute `node --check app-zero.js` e `node tests/verify-zero.mjs`. A Action do Android faz essas verificações automaticamente antes de produzir o APK. Os arquivos de origem e o progresso do curso antigo permanecem separados e não são apagados.

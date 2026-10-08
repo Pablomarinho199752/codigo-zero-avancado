@@ -6,7 +6,8 @@ import { fileURLToPath } from 'node:url';
 const repo = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 const target = join(repo, 'www');
 const includes = [
-  'index.html', 'bootstrap.js', 'firebase-tutor-setup.js', 'android-app-check.js',
+  'index.html', 'curso-completo.html', 'aulas-zero-1.js', 'aulas-zero-2.js',
+  'app-zero.js', 'zero.css', 'bootstrap.js', 'firebase-tutor-setup.js', 'android-app-check.js',
   'styles.css', 'pro.css', 'sw.js', 'manifest.webmanifest',
   'assets', 'payload'
 ];
@@ -19,9 +20,13 @@ for (const item of includes) {
   await cp(join(repo, item), join(target, item), { recursive: true });
 }
 
-const html = await readFile(join(target, 'index.html'), 'utf8');
+const firstStep = await readFile(join(target, 'index.html'), 'utf8');
+if (!firstStep.includes('app-zero.js') || !firstStep.includes('aulas-zero-2.js')) {
+  throw new Error('Faltam as aulas do zero absoluto no início do curso');
+}
+const html = await readFile(join(target, 'curso-completo.html'), 'utf8');
 if (!html.includes('firebase-tutor-setup.js') || !html.includes('bootstrap.js')) {
-  throw new Error('Faltam scripts do tutor no index.html');
+  throw new Error('Faltam scripts do tutor no curso completo');
 }
 for (let i = 0; i < 8; i++) {
   const part = join(target, 'payload', `code-0${i}.txt`);
@@ -29,4 +34,4 @@ for (let i = 0; i < 8; i++) {
     throw new Error(`Parte do curso vazia: ${part}`);
   }
 }
-console.log('Código Zero completo copiado para www/ e pronto para Android.');
+console.log('Trilha introdutória, 96 aulas originais e Tutor copiados para www/ do Android.');
