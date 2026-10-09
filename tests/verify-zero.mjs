@@ -33,11 +33,16 @@ for(const [mi,m] of modules.entries()){
  }
 }
 assert.ok(codeTasks>=10,'Pouca prática de código');
-const beginner=file('index.html'),advanced=file('curso-completo.html'),sw=file('sw.js');
+const beginner=file('index.html'),advanced=file('curso-completo.html'),sw=file('sw.js'),cloud=file('cloud-sync.js'),rules=file('firestore.rules');
 for(const path of ['aulas-zero-1.js','aulas-zero-2.js','app-zero.js','zero.css']){
  assert.ok(beginner.includes(path),'Página inicial não carrega '+path);
  assert.ok(sw.includes(path),'Offline não inclui '+path);
 }
 assert.ok(advanced.includes('bootstrap.js')&&advanced.includes('firebase-tutor-setup.js'),'Tutor do curso original não preservado');
+assert.ok(beginner.includes('cloud-sync.js')&&beginner.includes('syncBtn')&&beginner.includes('syncDialog'),'Tela de sincronização não integrada');
+assert.ok(sw.includes('cloud-sync.js'),'Service worker não inclui a sincronização');
+assert.ok(cloud.includes('signInWithEmailAndPassword')&&cloud.includes('createUserWithEmailAndPassword'),'Login e criação de conta ausentes');
+assert.ok(cloud.includes("collection('users').doc(uid).collection('progress').doc('fundamentals')"),'Caminho do progresso na nuvem ausente');
+assert.ok(rules.includes('request.auth.uid == userId')&&rules.includes("progressId == 'fundamentals'"),'Regras não restringem o progresso ao dono da conta');
 assert.ok(sw.includes('curso-completo.html'),'Curso original não disponível offline');
-console.log('OK:',modules.length,'módulos;',lessons.length,'aulas;',codeTasks,'atividades de código; curso original e offline preservados.');
+console.log('OK:',modules.length,'módulos;',lessons.length,'aulas;',codeTasks,'atividades de código; sincronização e regras Firebase verificadas.');
