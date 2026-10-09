@@ -13,17 +13,37 @@ if(window.Capacitor?.isNativePlatform?.()) document.documentElement.classList.ad
 const $=id=>document.getElementById(id);
 const el=(tag,cls,content)=>{const n=document.createElement(tag);if(cls)n.className=cls;if(content!==undefined)n.textContent=String(content);return n};
 const link=(label,href,cls='secondary')=>{const a=el('a',cls,label);a.href=href;a.style.textDecoration='none';a.style.display='inline-flex';a.style.alignItems='center';a.style.justifyContent='center';return a};
-let state={done:[],quiz:{},code:{},answers:{},attempts:{},current:0,theme:'light',zoom:1,notes:{},introSeen:false};
+let state={done:[],quiz:{},code:{},answers:{},attempts:{},current:0,theme:'light',zoom:1,notes:{},introSeen:false,draft:{}};
+const BACKUP_KEY=KEY+'_backup_v2';
+let saveTimer=0;
 try{
- const saved=JSON.parse(localStorage.getItem(KEY)||'null');
- if(saved&&typeof saved==='object'&&!Array.isArray(saved))state={...state,...saved};
+ const candidates=[localStorage.getItem(KEY),localStorage.getItem(BACKUP_KEY)];
+ let best=null,bestScore=-1;
+ for(const raw of candidates){if(!raw)continue;try{const item=JSON.parse(raw);if(!item||typeof item!=='object'||Array.isArray(item))continue;
+  const score=(Array.isArray(item.done)?item.done.length:0)+Object.keys(item.quiz||{}).filter(k=>item.quiz[k]).length+Object.keys(item.code||{}).filter(k=>item.code[k]).length+Object.keys(item.notes||{}).filter(k=>item.notes[k]).length+Object.keys(item.draft||{}).filter(k=>item.draft[k]).length;
+  if(score>bestScore){best=item;bestScore=score;}
+ }catch(_){}}
+ if(best)state={...state,...best};
 }catch(e){console.warn('O progresso anterior não pôde ser lido.',e)}
 state.done=Array.isArray(state.done)?state.done.filter(v=>typeof v==='string'): [];
 for(const key of ['quiz','code','answers','attempts','notes'])if(!state[key]||typeof state[key]!=='object'||Array.isArray(state[key]))state[key]={};
 state.current=Number.isInteger(state.current)?Math.max(0,Math.min(count-1,state.current)):0;
 state.zoom=Number.isFinite(state.zoom)?Math.max(.9,Math.min(1.45,state.zoom)):1;
 state.theme=state.theme==='dark'?'dark':'light';
-const save=()=>{try{localStorage.setItem(KEY,JSON.stringify(state))}catch(err){console.warn('Sem espaço para salvar o progresso',err)}};
+const save=()=>{
+ try{
+  const snapshot=JSON.stringify({...state,savedAt:new Date().toISOString()});
+  localStorage.setItem(KEY,snapshot);
+  localStorage.setItem(BACKUP_KEY,snapshot);
+ }catch(err){console.warn('O salvamento local falhou. Exporte seu progresso como segurança.',err)}
+ // Backup redundante no IndexedDB: sobrevive a algumas falhas de localStorage/cache.
+ try{if(window.indexedDB){const req=indexedDB.open('CodigoZeroProgressDB',1);req.onupgradeneeded=()=>{if(!req.result.objectStoreNames.contains('progress'))req.result.createObjectStore('progress')};req.onsuccess=()=>{const db=req.result;try{const tx=db.transaction('progress','readwrite');tx.objectStore('progress').put({...state,savedAt:Date.now()},KEY);tx.oncomplete=()=>db.close();tx.onerror=()=>db.close()}catch(_){db.close()}}}}catch(_){}
+};
+const scheduleSave=()=>{if(saveTimer)clearTimeout(saveTimer);saveTimer=setTimeout(()=>{saveTimer=0;save()},250)};
+window.addEventListener('pagehide',save);
+document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='hidden')save()});
+window.addEventListener('beforeunload',save);
+
 const hasCode=l=>Boolean(l.raw[9]&&typeof l.raw[9]==='object');
 const complete=l=>Boolean(state.quiz[l.id]&&(!hasCode(l)||state.code[l.id]));
 const firstLocked=()=>{for(let i=0;i<count;i++){if(!complete(lessons[i]))return i}return count};
@@ -233,8 +253,15 @@ function installButtons(){
 }
 function start(){
  if(!count){document.body.textContent='Não foi possível abrir as aulas. Atualize a página.';return}
+ // Restaura o backup IndexedDB apenas se tiver mais progresso que os backups síncronos.
+ try{if(window.indexedDB){const req=indexedDB.open('CodigoZeroProgressDB',1);req.onupgradeneeded=()=>{if(!req.result.objectStoreNames.contains('progress'))req.result.createObjectStore('progress')};req.onsuccess=()=>{const db=req.result;try{const tx=db.transaction('progress','readonly');const get=tx.objectStore('progress').get(KEY);get.onsuccess=()=>{const candidate=get.result;if(candidate&&typeof candidate==='object'){
+ const score=x=>(Array.isArray(x.done)?x.done.length:0)+Object.keys(x.quiz||{}).filter(k=>x.quiz[k]).length+Object.keys(x.code||{}).filter(k=>x.code[k]).length+Object.keys(x.notes||{}).filter(k=>x.notes[k]).length+Object.keys(x.draft||{}).filter(k=>x.draft[k]).length;
+ if(score(candidate)>score(state)){state={...state,...candidate};const safe=firstLocked();if(state.current>safe&&!complete(lessons[state.current]))state.current=safe;save();styleSetup();render();firstVisit();}
+ }};tx.oncomplete=()=>db.close();tx.onerror=()=>db.close()}catch(_){db.close()}}}}catch(_){}
  const safe=firstLocked();if(state.current>safe&&!complete(lessons[state.current]))state.current=safe;
  styleSetup();installButtons();render();firstVisit();
+ // Pequena gravação inicial garante que a sessão atual passa a ter backup próprio.
+ save();
 }
 start();
 })();
