@@ -58,8 +58,9 @@
   }
   function mergeStates(localInput, remoteInput) {
     const local = mapOrEmpty(localInput), remote = mapOrEmpty(remoteInput);
-    const localTime = timestamp(local.savedAt), remoteTime = timestamp(remote.savedAt);
-    const localNewer = localTime >= remoteTime;
+    const localTime = timestamp(local.editAt), remoteTime = timestamp(remote.editAt);
+    const localNewer = localTime > remoteTime;
+    const localSaved = timestamp(local.savedAt), remoteSaved = timestamp(remote.savedAt);
     const newer = localNewer ? local : remote;
     const older = localNewer ? remote : local;
     const mergeMap = key => ({ ...mapOrEmpty(older[key]), ...mapOrEmpty(newer[key]) });
@@ -72,7 +73,8 @@
     for (const k of new Set([...Object.keys(mapOrEmpty(local.attempts)), ...Object.keys(mapOrEmpty(remote.attempts))])) {
       attempts[k] = Math.max(Number(local.attempts?.[k]) || 0, Number(remote.attempts?.[k]) || 0);
     }
-    const latestTime = Math.max(localTime, remoteTime);
+    const latestTime = Math.max(localSaved, remoteSaved);
+    const latestEdit = Math.max(localTime, remoteTime);
     return {
       ...remote,
       ...local,
@@ -87,7 +89,8 @@
       introSeen: Boolean(local.introSeen || remote.introSeen),
       theme: newer.theme === 'dark' ? 'dark' : 'light',
       zoom: Number.isFinite(newer.zoom) ? newer.zoom : 1,
-      savedAt: latestTime ? new Date(latestTime).toISOString() : null
+      savedAt: latestTime ? new Date(latestTime).toISOString() : null,
+      editAt: latestEdit ? new Date(latestEdit).toISOString() : null
     };
   }
   function showSignedIn(user) {
