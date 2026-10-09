@@ -202,21 +202,9 @@
 
   async function syncNow() {
     if (!currentUser) { openDialog(); return; }
-    status('Conferindo as versões local e da nuvem...', '');
-    try {
-      const ref = progressRef(currentUser.uid);
-      const snap = await ref.get();
-      const local = window.CodigoZeroFundamentals.getState();
-      const remote = snap.exists && snap.data() ? snap.data().state : null;
-      const merged = remote ? mergeStates(local, remote) : local;
-      applyingRemote = true;
-      window.CodigoZeroFundamentals.applySyncedState(merged);
-      applyingRemote = false;
-      await writeState(ref, merged);
-    } catch (error) {
-      applyingRemote = false;
-      status(explainError(error), 'error');
-    }
+    // Refaz leitura e mesclagem completas; também recupera a conexão após regras
+    // ou o banco serem configurados no Console Firebase.
+    await connectUser(currentUser, sessionToken);
   }
 
   function loadScript(src) {
