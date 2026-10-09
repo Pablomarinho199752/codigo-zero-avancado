@@ -16,7 +16,7 @@
   const $ = id => document.getElementById(id);
   let auth = null, db = null, currentUser = null, unsubscribeDoc = null;
   let ready = false, applyingRemote = false, writeTimer = 0, pendingState = null, sessionToken = 0;
-  let lastError = '';
+  let lastError = '', sdkPromise = null;
 
   function status(message, kind) {
     const node = $('syncStatus');
@@ -36,6 +36,7 @@
     const dialog = $('syncDialog');
     if (!dialog) return;
     dialog.hidden = false;
+    if (!auth) initializeFirebase().catch(error => status(explainError(error), 'error'));
     if (!currentUser) $('syncEmail')?.focus();
   }
   function closeDialog() { if ($('syncDialog')) $('syncDialog').hidden = true; }
@@ -139,6 +140,7 @@
 
   async function connectUser(user, token) {
     ready = false;
+    lastError = '';
     if (unsubscribeDoc) { unsubscribeDoc(); unsubscribeDoc = null; }
     if (writeTimer) { clearTimeout(writeTimer); writeTimer = 0; }
     pendingState = null;
@@ -172,7 +174,7 @@
       }
       if (token !== sessionToken) return;
       unsubscribeDoc = ref.onSnapshot(remoteSnap => {
-        if (!remoteSnap.exists || !remoteSnap.exists()) return;
+        if (!remoteSnap.exists) return;
         const remoteData = remoteSnap.data() && remoteSnap.data().state;
         if (!remoteData || !currentUser || currentUser.uid !== user.uid || !ready) return;
         const localNow = window.CodigoZeroFundamentals.getState();
@@ -215,6 +217,51 @@
     }
   }
 
+  function loadScript(src) {
+    return new Promise((resolve, reject) => {
+      const existing = [...document.scripts].find(s => s.src === src);
+      if (existing && existing.dataset.loaded === 'true') { resolve(); return; }
+      const script = existing || document.createElement('script');
+      script.src = src;
+      script.async = false;
+      script.onload = () => { script.dataset.loaded = 'true'; resolve(); };
+      script.onerror = () => reject(new Error('Falha ao carregar o SDK Firebase.'));
+      if (!existing) document.head.appendChild(script);
+    });
+  }
+  async function initializeFirebase() {
+    if (auth && db) return;
+    if (sdkPromise) return sdkPromise;
+    sdkPromise = (async () => {
+      if (!window.firebase || !firebase.initializeApp || !firebase.auth || !firebase.firestore) {
+        const base = 'https://www.gstatic.com/firebasejs/11.10.0/';
+        await loadScript(base + 'firebase-app-compat.js');
+        await loadScript(base + 'firebase-auth-compat.js');
+        await loadScript(base + 'firebase-firestore-compat.js');
+      }
+      if (!window.firebase || !firebase.initializeApp) throw new Error('O SDK Firebase não ficou disponível.');
+      const app = firebase.apps.length ? firebase.app() : firebase.initializeApp(CONFIG);
+      auth = app.auth();
+      db = app.firestore();
+      await auth.setPersistence(firebase.auth.Auth.Persistence.LOCAL);
+      auth.onAuthStateChanged(user => {
+        currentUser = user || null;
+        ready = false;
+        sessionToken++;
+        const token = sessionToken;
+        showSignedIn(currentUser);
+        if (!currentUser) {
+          if (unsubscribeDoc) { unsubscribeDoc(); unsubscribeDoc = null; }
+          status(lastError || 'Entre com o mesmo e-mail e senha no celular e no computador para compartilhar o progresso.', lastError ? 'error' : '');
+          return;
+        }
+        connectUser(currentUser, token);
+      });
+    })();
+    try { await sdkPromise; }
+    catch (error) { sdkPromise = null; throw error; }
+  }
+
   function init() {
     if (!$('syncBtn')) return;
     $('syncBtn').addEventListener('click', openDialog);
@@ -254,32 +301,10 @@
     });
     $('syncBtn').setAttribute('aria-haspopup', 'dialog');
 
-    if (!window.firebase || !firebase.initializeApp) {
-      status('Sincronização na nuvem precisa de internet e do SDK Firebase. O salvamento local continua funcionando.', 'error');
-      return;
-    }
-    try {
-      const app = firebase.apps.length ? firebase.app() : firebase.initializeApp(CONFIG);
-      auth = app.auth();
-      db = app.firestore();
-      auth.setPersistence(firebase.auth.Auth.Persistence.LOCAL).then(() => {
-        auth.onAuthStateChanged(user => {
-          currentUser = user || null;
-          ready = false;
-          sessionToken++;
-          const token = sessionToken;
-          showSignedIn(currentUser);
-          if (!currentUser) {
-            if (unsubscribeDoc) { unsubscribeDoc(); unsubscribeDoc = null; }
-            status(lastError || 'Entre com o mesmo e-mail e senha no celular e no computador para compartilhar o progresso.', lastError ? 'error' : '');
-            return;
-          }
-          connectUser(currentUser, token);
-        });
-      }).catch(error => status(explainError(error), 'error'));
-    } catch (error) {
-      status('Não foi possível iniciar o Firebase. O progresso local permanece disponível.', 'error');
-    }
+    status('Preparando sincronização. O curso já funciona; o login na nuvem carrega em segundo plano.', '');
+    initializeFirebase().catch(error => {
+      status('Não foi possível carregar o Firebase. O progresso local continua funcionando; conecte à internet e toque em Conta para tentar de novo.', 'error');
+    });
   }
 
   window.CodigoZeroCloudSync = Object.freeze({ queueSave, openDialog, syncNow });
