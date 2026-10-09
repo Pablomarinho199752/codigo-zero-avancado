@@ -141,12 +141,14 @@
   async function connectUser(user, token) {
     ready = false;
     lastError = '';
+    lastError = '';
     if (unsubscribeDoc) { unsubscribeDoc(); unsubscribeDoc = null; }
     if (writeTimer) { clearTimeout(writeTimer); writeTimer = 0; }
     pendingState = null;
     const oldOwner = localStorage.getItem(OWNER_KEY);
     if (oldOwner && oldOwner !== user.uid) {
-      status('Este aparelho já foi vinculado a outra conta. Para evitar misturar dados, use a conta anterior neste aparelho ou exporte o progresso antes de trocar.', 'error');
+      lastError = 'Este aparelho já foi vinculado a outra conta. Para evitar misturar dados, use a conta anterior neste aparelho ou exporte o progresso antes de trocar.';
+      status(lastError, 'error');
       await auth.signOut();
       return;
     }
@@ -233,12 +235,10 @@
     if (auth && db) return;
     if (sdkPromise) return sdkPromise;
     sdkPromise = (async () => {
-      if (!window.firebase || !firebase.initializeApp || !firebase.auth || !firebase.firestore) {
-        const base = 'https://www.gstatic.com/firebasejs/11.10.0/';
-        await loadScript(base + 'firebase-app-compat.js');
-        await loadScript(base + 'firebase-auth-compat.js');
-        await loadScript(base + 'firebase-firestore-compat.js');
-      }
+      const base = 'https://www.gstatic.com/firebasejs/11.10.0/';
+      if (!window.firebase || !firebase.initializeApp) await loadScript(base + 'firebase-app-compat.js');
+      if (!window.firebase || !firebase.auth) await loadScript(base + 'firebase-auth-compat.js');
+      if (!window.firebase || !firebase.firestore) await loadScript(base + 'firebase-firestore-compat.js');
       if (!window.firebase || !firebase.initializeApp) throw new Error('O SDK Firebase não ficou disponível.');
       const app = firebase.apps.length ? firebase.app() : firebase.initializeApp(CONFIG);
       auth = app.auth();
@@ -307,6 +307,6 @@
     });
   }
 
-  window.CodigoZeroCloudSync = Object.freeze({ queueSave, openDialog, syncNow });
+  window.CodigoZeroCloudSync = Object.freeze({ queueSave, openDialog, syncNow, mergeStates });
   init();
 })();
