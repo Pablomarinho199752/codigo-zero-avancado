@@ -7,7 +7,7 @@ const repo = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 const target = join(repo, 'www');
 const includes = [
   'index.html', 'curso-completo.html', 'aulas-zero-1.js', 'aulas-zero-2.js',
-  'app-zero.js', 'zero.css', 'bootstrap.js', 'firebase-tutor-setup.js', 'android-app-check.js',
+  'app-zero.js', 'cloud-sync.js', 'zero.css', 'bootstrap.js', 'firebase-tutor-setup.js', 'android-app-check.js',
   'styles.css', 'pro.css', 'sw.js', 'manifest.webmanifest',
   'assets', 'payload'
 ];

@@ -2,9 +2,17 @@ import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
 import { runInNewContext } from 'node:vm';
 const file=p=>readFileSync(new URL('../'+p,import.meta.url),'utf8');
-const ctx={window:{}};
+const ctx={window:{},document:{getElementById:()=>null}};
 runInNewContext(file('aulas-zero-1.js'),ctx,{filename:'aulas-zero-1.js'});
 runInNewContext(file('aulas-zero-2.js'),ctx,{filename:'aulas-zero-2.js'});
+runInNewContext(file('cloud-sync.js'),ctx,{filename:'cloud-sync.js'});
+const merge=ctx.window.CodigoZeroCloudSync.mergeStates;
+const merged=merge({current:1,savedAt:'2026-10-08T10:00:00.000Z',editAt:'2026-10-08T10:00:00.000Z',quiz:{z0:true},notes:{z2:'rascunho antigo'},draft:{z3:'print(1)'}},{current:3,savedAt:'2026-10-09T10:00:00.000Z',editAt:'2026-10-09T10:00:00.000Z',quiz:{z1:true},notes:{z2:'rascunho novo'},draft:{z4:'print(2)'}});
+assert.equal(merged.current,3,'A mesclagem deve manter a aula mais avançada');
+assert.ok(merged.quiz.z0&&merged.quiz.z1,'A mesclagem deve preservar conclusões de ambos os aparelhos');
+assert.equal(merged.notes.z2,'rascunho novo','A anotação mais recente deve prevalecer');
+assert.equal(merged.draft.z3,'print(1)','A mesclagem deve preservar rascunhos exclusivos do aparelho local');
+assert.equal(merged.draft.z4,'print(2)','A mesclagem deve preservar rascunhos exclusivos da nuvem');
 const modules=ctx.window.ZERO_MODULOS;
 assert.ok(Array.isArray(modules),'Os módulos precisam existir');
 const lessons=modules.flatMap(m=>m.aulas);
@@ -33,11 +41,16 @@ for(const [mi,m] of modules.entries()){
  }
 }
 assert.ok(codeTasks>=10,'Pouca prática de código');
-const beginner=file('index.html'),advanced=file('curso-completo.html'),sw=file('sw.js');
+const beginner=file('index.html'),advanced=file('curso-completo.html'),sw=file('sw.js'),cloud=file('cloud-sync.js'),rules=file('firestore.rules');
 for(const path of ['aulas-zero-1.js','aulas-zero-2.js','app-zero.js','zero.css']){
  assert.ok(beginner.includes(path),'Página inicial não carrega '+path);
  assert.ok(sw.includes(path),'Offline não inclui '+path);
 }
 assert.ok(advanced.includes('bootstrap.js')&&advanced.includes('firebase-tutor-setup.js'),'Tutor do curso original não preservado');
+assert.ok(beginner.includes('cloud-sync.js')&&beginner.includes('syncBtn')&&beginner.includes('syncDialog'),'Tela de sincronização não integrada');
+assert.ok(sw.includes('cloud-sync.js'),'Service worker não inclui a sincronização');
+assert.ok(cloud.includes('signInWithEmailAndPassword')&&cloud.includes('createUserWithEmailAndPassword'),'Login e criação de conta ausentes');
+assert.ok(cloud.includes("collection('users').doc(uid).collection('progress').doc('fundamentals')"),'Caminho do progresso na nuvem ausente');
+assert.ok(rules.includes('request.auth.uid == userId')&&rules.includes("progressId == 'fundamentals'"),'Regras não restringem o progresso ao dono da conta');
 assert.ok(sw.includes('curso-completo.html'),'Curso original não disponível offline');
-console.log('OK:',modules.length,'módulos;',lessons.length,'aulas;',codeTasks,'atividades de código; curso original e offline preservados.');
+console.log('OK:',modules.length,'módulos;',lessons.length,'aulas;',codeTasks,'atividades de código; sincronização e regras Firebase verificadas.');

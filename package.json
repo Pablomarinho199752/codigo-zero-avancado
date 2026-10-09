@@ -7,7 +7,7 @@
     "build:android-web": "node scripts/build-android-web.mjs",
     "android:sync": "npm run build:android-web && npx cap sync android",
     "android:apk": "npm run android:sync && cd android && ./gradlew assembleDebug",
-    "test:zero": "node --check aulas-zero-1.js && node --check aulas-zero-2.js && node --check app-zero.js && node tests/verify-zero.mjs"
+    "test:zero": "node --check aulas-zero-1.js && node --check aulas-zero-2.js && node --check app-zero.js && node --check cloud-sync.js && node tests/verify-zero.mjs"
   },
   "dependencies": {
     "@capacitor/core": "^8.0.0",

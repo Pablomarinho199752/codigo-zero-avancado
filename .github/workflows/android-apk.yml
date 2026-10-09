@@ -29,6 +29,7 @@ jobs:
           node --check aulas-zero-1.js
           node --check aulas-zero-2.js
           node --check app-zero.js
+          node --check cloud-sync.js
           node tests/verify-zero.mjs
 
       - name: Instalar Java 21

@@ -33,6 +33,7 @@
 <div class="top">
 <div class="top-left"><button class="small-btn mobile-menu" id="menuBtn" type="button" aria-label="Abrir o menu de aulas">☰ Aulas</button><span id="stepLabel">Preparando aulas...</span></div>
 <div class="top-right">
+<button id="syncBtn" class="small-btn sync-top-btn" type="button" aria-label="Entrar para sincronizar entre aparelhos">☁ Conta</button>
 <button id="fontMinus" class="small-btn" type="button" aria-label="Diminuir letras">A−</button>
 <button id="fontPlus" class="small-btn" type="button" aria-label="Aumentar letras">A+</button>
 <button id="themeBtn" class="small-btn" type="button">☾ Tema escuro</button>
@@ -46,7 +47,7 @@
 <button class="primary" type="button" id="resumeBtn">Começar / continuar aprendendo</button>
 <a class="secondary" href="curso-completo.html" style="text-decoration:none">Já sei o básico · abrir curso completo ↗</a>
 </div>
-<p class="mini-note" style="margin-top:12px">O progresso desta trilha fica salvo neste aparelho. Você pode exportar um arquivo de segurança no menu.</p>
+<p class="mini-note" style="margin-top:12px">O progresso fica salvo neste aparelho. Entre na mesma conta em seu celular e computador para sincronizar aulas, respostas, exercícios e anotações pela nuvem.</p>
 </section>
 <section class="panel">
 <span class="eyebrow" id="sectionName">Aulas para iniciantes</span>
@@ -69,10 +70,34 @@
 <p class="mini-note" id="nextRecommended"></p>
 </main>
 </div>
+<div id="syncDialog" class="sync-overlay" hidden>
+  <section class="sync-card" role="dialog" aria-modal="true" aria-labelledby="syncTitle">
+    <button id="syncCloseBtn" class="sync-close secondary" type="button" aria-label="Fechar">✕</button>
+    <span class="eyebrow">Seu progresso em todos os aparelhos</span>
+    <h2 id="syncTitle">Sincronizar Código Zero</h2>
+    <p class="sync-explainer">Crie uma conta ou entre com o mesmo e-mail e senha no celular e no computador. Suas aulas concluídas, respostas, tentativas, rascunhos e resumos serão combinados e salvos na nuvem.</p>
+    <p id="syncStatus" class="sync-status" role="status" aria-live="polite">Preparando sincronização...</p>
+    <form id="syncForm">
+      <label for="syncEmail">E-mail</label>
+      <input id="syncEmail" name="email" type="email" autocomplete="username" required placeholder="voce@exemplo.com">
+      <label for="syncPassword">Senha</label>
+      <input id="syncPassword" name="password" type="password" autocomplete="current-password" minlength="6" required placeholder="Pelo menos 6 caracteres">
+      <button class="primary" type="submit">Entrar e sincronizar</button>
+      <button id="createAccountBtn" class="secondary" type="button">Criar conta para sincronizar</button>
+    </form>
+    <div id="syncAccountActions" hidden>
+      <p id="syncAccountLabel" class="sync-account-label"></p>
+      <button id="syncNowBtn" class="primary" type="button">Sincronizar agora</button>
+      <button id="signOutBtn" class="secondary" type="button">Sair desta conta</button>
+    </div>
+    <p class="mini-note">O progresso continua salvo localmente mesmo sem internet. A senha é enviada ao Firebase Authentication e não é guardada pelo Código Zero. Não use a senha do ChatGPT.</p>
+  </section>
+</div>
 <noscript>Ative o JavaScript para usar as aulas interativas.</noscript>
 <script src="./aulas-zero-1.js"></script>
 <script src="./aulas-zero-2.js"></script>
 <script src="./app-zero.js"></script>
+<script src="./cloud-sync.js"></script>
 <script>
 if('serviceWorker' in navigator && location.protocol==='https:'){
  navigator.serviceWorker.register('./sw.js').catch(err=>console.warn('Offline indisponível',err));

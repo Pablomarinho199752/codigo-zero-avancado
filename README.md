@@ -20,6 +20,27 @@ A página principal agora abre **79 microaulas em 11 módulos**, com:
 
 O Tutor Gemini continua dependendo da configuração Firebase e da conexão à internet. Na trilha inicial, o botão **Copiar contexto e abrir Tutor IA** ajuda a transferir a pergunta ao curso completo, mas ainda exige que o aluno cole a mensagem.
 
+## Sincronizar o progresso entre celular e computador
+
+A trilha de 79 microaulas tem sincronização pela nuvem com Firebase Authentication e Cloud Firestore. O progresso local continua funcionando sem login ou internet; a sincronização exige que o usuário entre com **a mesma conta** nos aparelhos.
+
+### Ativação única no Firebase (não é necessário ativar faturamento)
+
+1. Abra [Authentication no projeto Código Zero](https://console.firebase.google.com/project/codigo-zero-avancado/authentication/providers).
+2. Em **Sign-in method / Método de login**, habilite **E-mail/senha** e salve.
+3. Abra [Cloud Firestore](https://console.firebase.google.com/project/codigo-zero-avancado/firestore). Se ainda não existir banco, crie-o em **Production mode / Modo de produção**. Selecione a região **southamerica-east1 (São Paulo)** se estiver disponível; a região do banco não pode ser alterada depois.
+4. Na aba **Rules / Regras**, publique o conteúdo do arquivo [firestore.rules](./firestore.rules). As regras permitem que cada conta leia e altere apenas o próprio documento de progresso.
+5. Não mude o projeto para Blaze nem adicione faturamento para esta configuração. Mantenha-se no Spark e dentro das cotas gratuitas.
+
+### Usar em dois aparelhos
+
+1. No celular onde está o progresso antigo, abra o Código Zero e toque em **☁ Conta**.
+2. Toque em **Criar conta para sincronizar**, usando um e-mail seu e uma senha nova (mínimo 6 caracteres). O progresso que já está no aparelho será combinado com a nuvem.
+3. No computador, abra o mesmo curso, toque em **☁ Conta** e escolha **Entrar e sincronizar** com o mesmo e-mail e senha.
+4. Aguarde a mensagem **Sincronizado na nuvem**. A sincronização automática inclui aulas concluídas, respostas, tentativas, rascunhos e resumos. Ela também acompanha alterações feitas no outro aparelho quando há internet.
+
+**Importante:** a senha do ChatGPT não deve ser usada. A senha da conta de sincronização é enviada ao Firebase Authentication e não é guardada pelo curso. O progresso local não é apagado ao sair da conta. A primeira sincronização combina os dados dos aparelhos; mantenha uma exportação de segurança antes de trocar de conta.
+
 ## Abrir ou instalar pelo navegador
 
 - [Curso online e PWA](https://pablomarinho199752.github.io/codigo-zero-avancado/)
