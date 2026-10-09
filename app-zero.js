@@ -31,7 +31,7 @@ state.current=Number.isInteger(state.current)?Math.max(0,Math.min(count-1,state.
 state.zoom=Number.isFinite(state.zoom)?Math.max(.9,Math.min(1.45,state.zoom)):1;
 state.theme=state.theme==='dark'?'dark':'light';
 const save=(options={})=>{
- if(options.touch!==false)state.savedAt=new Date().toISOString();
+ if(options.touch!==false){const now=new Date().toISOString();state.savedAt=now;state.editAt=now;}
  try{
   const snapshot=JSON.stringify(state);
   localStorage.setItem(KEY,snapshot);
