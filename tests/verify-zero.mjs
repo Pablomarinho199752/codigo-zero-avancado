@@ -7,7 +7,7 @@ runInNewContext(file('aulas-zero-1.js'),ctx,{filename:'aulas-zero-1.js'});
 runInNewContext(file('aulas-zero-2.js'),ctx,{filename:'aulas-zero-2.js'});
 runInNewContext(file('cloud-sync.js'),ctx,{filename:'cloud-sync.js'});
 const merge=ctx.window.CodigoZeroCloudSync.mergeStates;
-const merged=merge({current:1,savedAt:'2026-10-08T10:00:00.000Z',quiz:{z0:true},notes:{z2:'rascunho antigo'},draft:{z3:'print(1)'}},{current:3,savedAt:'2026-10-09T10:00:00.000Z',quiz:{z1:true},notes:{z2:'rascunho novo'},draft:{z4:'print(2)'}});
+const merged=merge({current:1,savedAt:'2026-10-08T10:00:00.000Z',editAt:'2026-10-08T10:00:00.000Z',quiz:{z0:true},notes:{z2:'rascunho antigo'},draft:{z3:'print(1)'}},{current:3,savedAt:'2026-10-09T10:00:00.000Z',editAt:'2026-10-09T10:00:00.000Z',quiz:{z1:true},notes:{z2:'rascunho novo'},draft:{z4:'print(2)'}});
 assert.equal(merged.current,3,'A mesclagem deve manter a aula mais avançada');
 assert.ok(merged.quiz.z0&&merged.quiz.z1,'A mesclagem deve preservar conclusões de ambos os aparelhos');
 assert.equal(merged.notes.z2,'rascunho novo','A anotação mais recente deve prevalecer');
