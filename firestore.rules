@@ -1,19 +1,29 @@
 rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
-    // A conta só pode ler e alterar o próprio progresso da trilha introdutória.
     match /users/{userId}/progress/{progressId} {
-      allow read: if request.auth != null
-                  && request.auth.uid == userId
-                  && progressId == 'fundamentals';
+      function ownsDocument() {
+        return request.auth != null && request.auth.uid == userId;
+      }
 
-      allow create, update: if request.auth != null
-                            && request.auth.uid == userId
+      // Curso Código Zero original.
+      allow read: if ownsDocument() && progressId == 'fundamentals';
+      allow create, update: if ownsDocument()
                             && progressId == 'fundamentals'
                             && request.resource.data.keys().hasOnly(['schemaVersion', 'state', 'updatedAt'])
                             && request.resource.data.state is map;
 
-      // O app não precisa apagar o progresso na nuvem.
+      // Curso Flutter/Python novo. O estado fica em um documento separado para
+      // impedir que um curso sobrescreva o progresso do outro.
+      allow read: if ownsDocument() && progressId == 'flutter_course_v1';
+      allow create, update: if ownsDocument()
+                            && progressId == 'flutter_course_v1'
+                            && request.resource.data.keys().hasOnly(['schemaVersion', 'stateJson', 'updatedAtMs'])
+                            && request.resource.data.schemaVersion == 2
+                            && request.resource.data.stateJson is string
+                            && request.resource.data.updatedAtMs is int
+                            && request.resource.data.stateJson.size() < 900000;
+
       allow delete: if false;
     }
   }
